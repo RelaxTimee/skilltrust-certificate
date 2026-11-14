@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#162e27" />
+    <meta
+      name="description"
+      content="ตรวจสอบ ออก และเพิกถอนใบรับรองดิจิทัลของ SkillTrust Academy บน Ethereum Sepolia"
+    />
+    <title>SkillTrust Academy · Digital Certificate</title>
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <script type="module" src="./main.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">ข้ามไปยังเนื้อหา</a>
+    <aside class="sidebar">
+      <a class="brand" href="./"
+        ><img src="./favicon.svg" width="43" height="43" alt="" /><span
+          >SkillTrust<small>ACADEMY</small></span
+        ></a
+      >
+      <p class="nav-caption">CREDENTIAL WORKSPACE</p>
+      <nav aria-label="เมนูหลัก">
+        <button data-view="verify" aria-current="page">
+          <span>01</span> ตรวจสอบใบรับรอง <i></i>
+        </button>
+        <button data-view="mine"><span>02</span> ใบรับรองของฉัน <i></i></button>
+        <button data-view="courses"><span>03</span> หลักสูตรการอบรม <i></i></button>
+        <button data-view="issue"><span>04</span> ออกใบรับรอง <i></i></button>
+        <button data-view="admin"><span>05</span> จัดการสิทธิ์ผู้ออก <i></i></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="sidebar-note">
+          <span class="seal-icon">✧</span>
+          <h2>ทักษะที่มีคุณค่า<br />หลักฐานที่ตรวจสอบได้</h2>
+          <p>จากความตั้งใจในการเรียนรู้<br />สู่ความเชื่อมั่นที่ส่งต่อได้</p>
+          <small>VERIFIABLE BY DESIGN ↗</small>
+        </div>
+        <a id="source-link" target="_blank" rel="noopener noreferrer">ดู Smart Contract ↗</a>
+        <p>Assignment 10 <span>SEPOLIA TESTNET</span></p>
+      </div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <div class="breadcrumb">
+          Workspace <span>/</span> <strong id="breadcrumb">ตรวจสอบใบรับรอง</strong>
+        </div>
+        <div class="wallet-controls">
+          <select id="wallet-provider" aria-label="เลือก Wallet" hidden></select
+          ><button id="connect-wallet" class="button secondary">เชื่อม Wallet</button>
+        </div>
+      </header>
+      <div class="network-strip">
+        <div>
+          <span class="dot"></span><strong>Ethereum Sepolia</strong
+          ><span>ข้อมูลจริงบน Testnet · ใช้ Sepolia ETH สำหรับค่า Gas</span>
+        </div>
+        <a id="contract-link" target="_blank" rel="noopener noreferrer" class="mono"></a>
+      </div>
+      <main id="main">
+        <div id="connection-status" class="notice" role="status">
+          กำลังตรวจสอบการเชื่อมต่อสัญญา…
+        </div>
+        <div id="wallet-status" class="wallet-strip" hidden>
+          <div>
+            <span>Wallet ที่เชื่อมต่อ</span><strong id="wallet-account" class="mono"></strong
+            ><small id="wallet-role"></small>
+          </div>
+          <button id="switch-network" class="button secondary" hidden>เปลี่ยนเป็น Sepolia</button
+          ><button id="disconnect-wallet" class="text-button">ตัดการเชื่อมต่อ</button>
+        </div>
+        <div id="page-error" class="notice error" role="alert" hidden></div>
+        <section id="transaction-status" class="notice transaction" role="status" hidden>
+          <div>
+            <strong id="transaction-message"></strong
+            ><a id="transaction-link" target="_blank" rel="noopener noreferrer" hidden></a>
+          </div>
+        </section>
+
+        <section id="view-verify" class="view">
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow">DIGITAL CREDENTIALS, REAL CONFIDENCE</p>
+              <h1>ทุกความสำเร็จ <span>ตรวจสอบได้</span></h1>
+              <p>ตรวจสอบใบรับรองและความถูกต้องของเอกสาร จากหลักฐานบน Blockchain</p>
+            </div>
+            <div class="heading-seal" aria-hidden="true">
+              ✓<small>TRUST IS<br />VERIFIABLE.</small>
+            </div>
+          </div>
+          <section class="panel search-panel" aria-labelledby="search-title">
+            <div class="section-title">
+              <span class="step">01</span>
+              <div>
+                <h2 id="search-title">ค้นหาใบรับรอง</h2>
+                <p>ใช้รหัสอ้างอิง หรือเปิดลิงก์จาก QR Code ของใบรับรอง</p>
+              </div>
+              <span class="pill">ไม่ต้องเชื่อม Wallet</span>
+            </div>
+            <form id="verify-form" class="search-form">
+              <label class="sr-only" for="verify-id">รหัสใบรับรอง</label
+              ><input
+                id="verify-id"
+                name="id"
+                placeholder="กรอกรหัสใบรับรอง เช่น CERT001"
+                required
+                maxlength="256"
+                autocomplete="off"
+                spellcheck="false"
+              /><button class="button primary" type="submit">
+                ตรวจสอบใบรับรอง <span>↗</span>
+              </button>
+            </form>
+            <p class="field-help">รหัสแยกตัวพิมพ์เล็ก-ใหญ่ กรุณากรอกให้ตรงกับรหัสที่ผู้ออกระบุ</p>
+          </section>
+          <div id="verify-state" class="empty panel">
+            <div class="empty-symbol">✧</div>
+            <h2>ความเชื่อมั่นเริ่มต้นที่การตรวจสอบ</h2>
+            <p>
+              ค้นหารหัสเพื่อดูหลักสูตร ผู้รับ วันที่ออก และสถานะปัจจุบัน<br />หากต้องการตรวจเอกสารด้วย
+              ให้เตรียม PDF ต้นฉบับไว้ด้วย
+            </p>
+            <span class="pill">PUBLIC VERIFICATION</span>
+          </div>
+          <div id="certificate-result" class="verification-grid" hidden>
+            <section class="panel record-panel">
+              <div id="certificate-status" class="result-banner"></div>
+              <article class="certificate-art">
+                <div class="document-brand">
+                  <img src="./favicon.svg" alt="" width="29" height="29" /><strong
+                    >SkillTrust <small>ACADEMY</small></strong
+                  ><span>CERTIFICATE OF ACHIEVEMENT</span>
+                </div>
+                <div class="award-mark" aria-hidden="true">✧</div>
+                <p class="eyebrow">ใบรับรองการสำเร็จหลักสูตร</p>
+                <h2 id="certificate-course"></h2>
+                <p id="certificate-course-code" class="mono"></p>
+                <p class="recipient-label">ออกให้แก่ Wallet</p>
+                <p id="certificate-recipient" class="mono address"></p>
+                <div class="document-meta">
+                  <div>
+                    <span>รหัสใบรับรอง</span><strong id="certificate-id" class="mono"></strong>
+                  </div>
+                  <div><span>วันที่ออก (เวลาไทย)</span><strong id="certificate-date"></strong></div>
+                </div>
+                <div class="document-foot">
+                  <span>ETHEREUM SEPOLIA</span><span>VERIFIABLE CREDENTIAL</span>
+                </div>
+              </article>
+              <dl class="record-metadata">
+                <div>
+                  <dt>ผู้ออกใบรับรอง</dt>
+                  <dd id="certificate-issuer" class="mono"></dd>
+                </div>
+                <div>
+                  <dt>Hash ที่บันทึก (SHA-256 / bytes32)</dt>
+                  <dd id="certificate-hash" class="mono break"></dd>
+                </div>
+              </dl>
+              <div id="revocation-details" class="notice error" hidden></div>
+              <form id="revoke-form" class="revoke-form" hidden>
+                <h3>เพิกถอนใบรับรอง</h3>
+                <label for="revoke-reason">เหตุผลการเพิกถอน</label
+                ><textarea
+                  id="revoke-reason"
+                  name="reason"
+                  maxlength="1000"
+                  required
+                  rows="2"
+                  placeholder="ระบุเหตุผล โดยไม่ใส่ข้อมูลส่วนบุคคล"
+                ></textarea
+                ><button type="submit" class="button danger">ตรวจสอบก่อนเพิกถอน</button
+                ><small>ข้อมูลการออกและ Hash เดิมจะยังคงอยู่บน Blockchain</small>
+              </form>
+            </section>
+            <aside>
+              <section class="panel document-check">
+                <p class="eyebrow">DOCUMENT INTEGRITY</p>
+                <h2>เอกสารตรงกันไหม?</h2>
+                <p>เลือก PDF ต้นฉบับเพื่อคำนวณ SHA-256 และเทียบกับ Hash ที่บันทึกไว้</p>
+                <label class="file-drop" for="verify-file"
+                  ><span aria-hidden="true">↥</span><strong>เลือกไฟล์ PDF</strong
+                  ><small>ขนาดไม่เกิน 20 MB</small
+                  ><input id="verify-file" type="file" accept="application/pdf,.pdf"
+                /></label>
+                <div id="file-result" class="notice" role="status" hidden></div>
+                <p class="privacy-note">
+                  ไฟล์อยู่ในอุปกรณ์ของคุณเสมอ<br />ไม่มีการอัปโหลด PDF หรือชื่อไฟล์
+                </p>
+              </section>
+              <section class="panel share-panel">
+                <p class="eyebrow">SHARE YOUR ACHIEVEMENT</p>
+                <h2>ส่งต่อความสำเร็จ</h2>
+                <div id="qr-code" aria-label="QR ลิงก์ตรวจสอบ"></div>
+                <button id="copy-link" class="button secondary full">คัดลอกลิงก์ตรวจสอบ</button
+                ><label class="sr-only" for="share-url">ลิงก์ตรวจสอบใบรับรอง</label
+                ><input id="share-url" readonly class="share-url" />
+                <p id="share-message" role="status"></p>
+                <p id="qr-local-note" class="field-help" hidden>
+                  QR ที่ใช้ localhost เปิดจากเครื่องอื่นไม่ได้ ให้เปิดเว็บผ่าน URL
+                  ที่อุปกรณ์อื่นเข้าถึงได้ก่อนแชร์
+                </p>
+              </section>
+            </aside>
+          </div>
+          <div class="info-grid">
+            <div>
+              <span>01 / PUBLIC</span>
+              <h3>ตรวจสอบได้ทุกคน</h3>
+              <p>ค้นหาข้อมูลได้โดยไม่ต้องใช้ Wallet</p>
+            </div>
+            <div>
+              <span>02 / PRIVATE BY DEFAULT</span>
+              <h3>PDF อยู่ในเครื่องคุณ</h3>
+              <p>ส่งเฉพาะ Hash สำหรับการตรวจสอบ</p>
+            </div>
+            <div>
+              <span>03 / ALWAYS TRACEABLE</span>
+              <h3>คงหลักฐานเดิม</h3>
+              <p>เพิกถอนโดยไม่ลบประวัติการออก</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="view-mine" class="view" hidden>
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow">YOUR LEARNING JOURNEY</p>
+              <h1>ใบรับรองของฉัน</h1>
+              <p>รายการที่ Smart Contract ผูกไว้กับ Wallet ของคุณ รวมใบที่ถูกเพิกถอนแล้ว</p>
+            </div>
+            <button id="refresh-mine" class="button secondary">โหลดรายการใหม่ ↻</button>
+          </div>
+          <div id="mine-state" class="empty panel">กรุณาเชื่อม Wallet เพื่อดูใบรับรองของคุณ</div>
+          <div id="mine-list" class="credential-grid"></div>
+          <div id="mine-pagination" class="pagination" hidden>
+            <button id="mine-prev" class="button secondary">← ก่อนหน้า</button
+            ><span id="mine-page"></span
+            ><button id="mine-next" class="button secondary">ถัดไป →</button>
+          </div>
+        </section>
+
+        <section id="view-courses" class="view" hidden>
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow">COURSE CATALOG</p>
+              <h1>หลักสูตรการอบรม</h1>
+              <p>หลักสูตรที่ลงทะเบียนกับ SkillTrust Academy บน Ethereum Sepolia</p>
+            </div>
+            <button id="refresh-courses" class="button secondary">โหลดหลักสูตรใหม่ ↻</button>
+          </div>
+          <div class="management-grid">
+            <section class="panel">
+              <div class="section-title"><h2>หลักสูตรทั้งหมด</h2></div>
+              <p id="courses-state" role="status">กำลังโหลดข้อมูล…</p>
+              <div id="courses-list"></div>
+            </section>
+            <section class="panel">
+              <div class="section-title">
+                <span class="step">+</span>
+                <h2>สร้างหลักสูตร</h2>
+              </div>
+              <p class="access-hint owner-hint">ต้องเชื่อม Wallet เจ้าของสัญญาเพื่อสร้างหลักสูตร</p>
+              <form id="course-form">
+                <fieldset disabled>
+                  <label for="course-code">รหัสหลักสูตร</label
+                  ><input
+                    id="course-code"
+                    name="code"
+                    required
+                    maxlength="128"
+                    placeholder="เช่น AI-101"
+                  /><label for="course-name">ชื่อหลักสูตร</label
+                  ><input
+                    id="course-name"
+                    name="name"
+                    required
+                    maxlength="120"
+                    placeholder="เช่น AI & Machine Learning Essentials"
+                  /><label for="course-description">รายละเอียดการอบรม</label
+                  ><textarea
+                    id="course-description"
+                    name="description"
+                    required
+                    maxlength="1000"
+                    rows="4"
+                  ></textarea
+                  ><button class="button primary full" type="submit">
+                    สร้างหลักสูตรบน Sepolia ↗
+                  </button>
+                </fieldset>
+              </form>
+            </section>
+          </div>
+        </section>
+
+        <section id="view-issue" class="view" hidden>
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow">ISSUE A CREDENTIAL</p>
+              <h1>ออกใบรับรองดิจิทัล</h1>
+              <p>สำหรับเจ้าของสัญญาและ Wallet ที่ได้รับสิทธิ์ผู้ออกใบรับรอง</p>
+            </div>
+          </div>
+          <div class="management-grid">
+            <section class="panel">
+              <div class="section-title">
+                <span class="step">01</span>
+                <div>
+                  <h2>ข้อมูลและเอกสารใบรับรอง</h2>
+                  <p>วันที่ออกจะใช้เวลาของ Block ที่ธุรกรรมได้รับการยืนยัน</p>
+                </div>
+              </div>
+              <p class="access-hint" id="issue-hint">
+                กรุณาเชื่อม Wallet ที่มีสิทธิ์ และเลือกเครือข่าย Sepolia
+              </p>
+              <form id="issue-form">
+                <fieldset disabled>
+                  <label for="issue-id">รหัสใบรับรอง (ห้ามซ้ำ)</label
+                  ><input
+                    id="issue-id"
+                    name="id"
+                    required
+                    maxlength="128"
+                    placeholder="เช่น CERT001"
+                  /><label for="issue-course">รหัสหลักสูตรที่ลงทะเบียนแล้ว</label
+                  ><input
+                    id="issue-course"
+                    name="course"
+                    required
+                    maxlength="128"
+                    list="course-options"
+                    placeholder="กรอกรหัสหลักสูตรให้ตรงตัวพิมพ์เล็ก-ใหญ่"
+                  /><datalist id="course-options"></datalist
+                  ><label for="issue-recipient">Wallet ผู้รับใบรับรอง</label
+                  ><input
+                    id="issue-recipient"
+                    name="recipient"
+                    required
+                    minlength="42"
+                    maxlength="42"
+                    placeholder="0x…"
+                    spellcheck="false"
+                  /><label class="file-drop" for="issue-file"
+                    ><span aria-hidden="true">↥</span><strong>เลือก PDF ใบรับรอง</strong
+                    ><small>ไฟล์จะไม่ถูกอัปโหลด · สูงสุด 20 MB</small
+                    ><input id="issue-file" type="file" accept="application/pdf,.pdf" required
+                  /></label>
+                  <div id="issue-file-result" class="notice" role="status" hidden></div>
+                  <button type="submit" class="button primary full">
+                    ตรวจสอบก่อนออกใบรับรอง ↗
+                  </button>
+                </fieldset>
+              </form>
+            </section>
+            <aside class="issue-info">
+              <span class="seal-icon">✧</span>
+              <h2>เก็บหลักฐาน<br />รักษาความเป็นส่วนตัว</h2>
+              <p>
+                ระบบบันทึกเฉพาะรหัส หลักสูตร Wallet วันที่ และ Hash ลงสัญญา หลีกเลี่ยงชื่อ อีเมล
+                และข้อมูลส่วนบุคคลในรหัสหรือรายละเอียดที่ส่งขึ้น Blockchain
+              </p>
+              <hr />
+              <p>
+                Hash ตรงกันยืนยันว่า bytes ของไฟล์เหมือนหลักฐานที่บันทึก
+                ไม่ได้รับรองเนื้อหาโดยอัตโนมัติ และใบที่ถูกเพิกถอนจะไม่มีผลใช้งาน
+              </p>
+            </aside>
+          </div>
+        </section>
+
+        <section id="view-admin" class="view" hidden>
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow">ISSUER ACCESS</p>
+              <h1>จัดการสิทธิ์ผู้ออก</h1>
+              <p>อนุญาตหรือยกเลิกสิทธิ์ออกใบรับรอง เฉพาะเจ้าของสัญญาเท่านั้น</p>
+            </div>
+          </div>
+          <div class="management-grid">
+            <section class="panel">
+              <h2>ปรับสิทธิ์ Wallet</h2>
+              <p class="access-hint owner-hint">ต้องเชื่อม Wallet เจ้าของสัญญาเพื่อจัดการสิทธิ์</p>
+              <form id="issuer-form">
+                <fieldset disabled>
+                  <label for="issuer-address">Wallet ของผู้ออกใบรับรอง</label
+                  ><input
+                    id="issuer-address"
+                    name="address"
+                    minlength="42"
+                    maxlength="42"
+                    required
+                    placeholder="0x…"
+                  /><label for="issuer-allowed">สิทธิ์ที่ต้องการกำหนด</label
+                  ><select id="issuer-allowed" name="allowed">
+                    <option value="true">อนุญาตให้ออกใบรับรอง</option>
+                    <option value="false">ยกเลิกสิทธิ์ออกใบรับรอง</option></select
+                  ><button type="submit" class="button primary full">
+                    ตรวจสอบก่อนปรับสิทธิ์ ↗
+                  </button>
+                </fieldset>
+              </form>
+            </section>
+            <aside class="issue-info">
+              <h2>สิทธิ์ถูกตรวจบน Contract</h2>
+              <p>
+                การซ่อนปุ่มบนหน้าเว็บเป็นเพียงตัวช่วยใช้งาน สัญญาตรวจสิทธิ์ผู้ส่งธุรกรรมทุกครั้ง
+                เจ้าของสัญญาสามารถออกใบรับรองได้เสมอ แม้ตั้งค่า issuers ของตนเป็น false
+              </p>
+            </aside>
+          </div>
+        </section>
+        <footer>
+          <span>© SkillTrust Academy · Assignment 10</span
+          ><span>HTML · CSS · JavaScript · Ethers.js <span class="dot"></span></span>
+        </footer>
+      </main>
+    </div>
+    <dialog id="confirmation-dialog" aria-labelledby="confirmation-title">
+      <div class="dialog-heading">
+        <h2 id="confirmation-title">ยืนยันรายการบน Sepolia</h2>
+        <button id="close-confirmation" class="text-button" type="button" aria-label="ปิดหน้าต่าง">
+          ✕
+        </button>
+      </div>
+      <p id="confirmation-detail" class="break"></p>
+      <p class="field-help">
+        ตรวจสอบ Address และเครือข่ายใน Wallet อีกครั้ง รายการนี้ใช้ Sepolia ETH สำหรับค่า Gas
+        และข้อมูลจะถูกบันทึกสาธารณะ
+      </p>
+      <div class="dialog-actions">
+        <button id="cancel-confirmation" class="button secondary">ยกเลิก</button
+        ><button id="submit-confirmation" class="button primary">ดำเนินการใน Wallet ↗</button>
+      </div>
+    </dialog>
+    <template id="course-template"
+      ><article class="course-card">
+        <span class="course-symbol">✧</span>
+        <div>
+          <small class="mono course-code"></small>
+          <h3 class="course-name"></h3>
+          <p class="course-description"></p>
+        </div></article
+    ></template>
+    <template id="credential-template"
+      ><article class="panel credential-card">
+        <span class="status-badge"></span>
+        <p class="eyebrow course-code"></p>
+        <h2 class="course-name"></h2>
+        <p class="mono cert-id"></p>
+        <div class="credential-bottom">
+          <span class="issued-date"></span
+          ><button type="button" class="text-button open-record">ดูใบรับรอง ↗</button>
+        </div>
+      </article></template
+    >
+    <noscript>กรุณาเปิดใช้งาน JavaScript เพื่ออ่านข้อมูลจาก Ethereum Sepolia</noscript>
+  </body>
+</html>

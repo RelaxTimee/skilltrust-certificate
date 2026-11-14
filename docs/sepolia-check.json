@@ -1,0 +1,17 @@
+{
+  "checkedAt": "2026-11-14T21:02:58.980Z",
+  "chainId": 11155111,
+  "address": "0x261d3AcB0599f162162ae5e8032686b18E1Db5f0",
+  "blockNumber": 12135653,
+  "deploymentBlock": 12132406,
+  "owner": "0x6124E88b9DBE3c7b3F1e53686224d44668C65933",
+  "runtimeBytes": 9936,
+  "runtimeSha256": "55aa03589294febb55b42be2fd711bc8c425ab254e0871e472e5fc1c3fb1987e",
+  "executableMatchesCompiledSource": true,
+  "compiler": "0.8.26+commit.8a97fa7a",
+  "optimizer": false,
+  "evmVersion": "cancun",
+  "missingCertificate": [false, "0x0000000000000000000000000000000000000000", "", "0", false],
+  "courses": [],
+  "transactionsSent": 0
+}

@@ -1,0 +1,55 @@
+{
+  "name": "skilltrust-certificate",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --config vite.pages.config.ts --host 0.0.0.0 --port 5177",
+    "build": "npm run check && vite build --config vite.pages.config.ts",
+    "dev:demo": "vite --host 0.0.0.0 --port 5177",
+    "build:demo": "tsc --noEmit && vite build",
+    "check": "tsc --noEmit && tsc -p tsconfig.pages.json",
+    "verify:sepolia": "node scripts/verify-sepolia.mjs",
+    "preview": "vite preview --config vite.pages.config.ts --host 0.0.0.0 --port 5177",
+    "test": "vitest run",
+    "format": "prettier --write src web tests scripts docs .github *.json *.ts *.html *.md"
+  },
+  "dependencies": {
+    "@fontsource/ibm-plex-sans-thai": "^5.2.0",
+    "@fontsource/space-grotesk": "^5.2.0",
+    "ethers": "^6.17.0",
+    "lucide-react": "^0.552.0",
+    "qrcode": "^1.5.4",
+    "qrcode.react": "^4.2.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "viem": "^2.38.0",
+    "zod": "^4.1.12"
+  },
+  "overrides": {
+    "solc": {
+      "tmp": "0.2.7"
+    }
+  },
+  "optionalDependencies": {
+    "@foundry-rs/anvil-darwin-amd64": "1.7.1",
+    "@foundry-rs/anvil-darwin-arm64": "1.7.1",
+    "@foundry-rs/anvil-linux-amd64": "1.7.1",
+    "@foundry-rs/anvil-linux-arm64": "1.7.1",
+    "@foundry-rs/anvil-win32-amd64": "1.7.1"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^16.3.0",
+    "@types/node": "^24.0.0",
+    "@types/qrcode": "^1.5.6",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^5.1.0",
+    "jsdom": "^27.2.0",
+    "prettier": "^3.6.2",
+    "solc": "0.8.26",
+    "typescript": "~5.9.3",
+    "vite": "^7.3.0",
+    "vitest": "^4.1.12"
+  }
+}
